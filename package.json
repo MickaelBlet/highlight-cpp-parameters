@@ -32,7 +32,7 @@
                     "type": "object",
                     "description": "set css of unused parameters https://code.visualstudio.com/api/references/vscode-api#ThemableDecorationRenderOptions",
                     "default": {
-                        "color": "#990000",
+                        "color": "#DD8888",
                         "fontStyle": "italic"
                     }
                 },
