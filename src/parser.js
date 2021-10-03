@@ -278,7 +278,13 @@ class Parser {
             endParenthesis = parenthesis[1];
             let startBrace = this.getOpenBraceIndex(endParenthesis);
             if (startBrace == null) {
-                this.searchPrototypes(startParenthesis, endParenthesis)
+                let wordsAndRanges = this.searchPrototypes(startParenthesis, endParenthesis);
+                let words = wordsAndRanges[0];
+                let ranges = wordsAndRanges[1];
+                for (let i = 0; i < words.length; i++) {
+                    this.log(words[i]);
+                    this.ranges.push(ranges[i]);
+                }
             }
             else {
                 let isConstructor = (this.text[startBrace] == ":");

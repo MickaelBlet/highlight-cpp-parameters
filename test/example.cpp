@@ -1,5 +1,7 @@
 #include "cstdio"
 
+void useless(int unused);
+
 void unsedParameter(void (*functionPtr)(int)) {
     functionPtr();
     return ;
