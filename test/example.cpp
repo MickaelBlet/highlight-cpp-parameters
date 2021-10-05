@@ -2,8 +2,8 @@
 
 void useless(int unused);
 
-void unsedParameter(void (*functionPtr)(int)) {
-    functionPtr();
+void functionParameter(void (*functionPtr)(int)) {
+    functionPtr(42);
     return ;
 }
 
@@ -20,5 +20,5 @@ int main(int argc, char* argv[], char **env) {
             printf(" - \"%s\"\n", argv[i]);
         }
     }
-    unsedParameter(&useless);
+    functionParameter(&useless);
 }

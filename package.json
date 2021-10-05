@@ -22,7 +22,7 @@
             "properties": {
                 "highlight-cpp-parameters.parameterCss": {
                     "type": "object",
-                    "description": "set css of parameters https://code.visualstudio.com/api/references/vscode-api#ThemableDecorationRenderOptions",
+                    "description": "Set css of parameters\nhttps://code.visualstudio.com/api/references/vscode-api#ThemableDecorationRenderOptions",
                     "default": {
                         "color": "#999999",
                         "fontStyle": "italic"
@@ -30,15 +30,17 @@
                 },
                 "highlight-cpp-parameters.unusedParameterCss": {
                     "type": "object",
-                    "description": "set css of unused parameters https://code.visualstudio.com/api/references/vscode-api#ThemableDecorationRenderOptions",
+                    "description": "Set css of unused parameters\nhttps://code.visualstudio.com/api/references/vscode-api#ThemableDecorationRenderOptions",
                     "default": {
                         "color": "#DD8888",
-                        "fontStyle": "italic"
+                        "fontStyle": "italic",
+                        "overviewRulerColor": "#DD8888",
+                        "overviewRulerLane": 4
                     }
                 },
                 "highlight-cpp-parameters.timeout": {
                     "type": "integer",
-                    "description": "set timeout after applicate decorations",
+                    "description": "Set timeout after applicate decorations",
                     "default": 100
                 }
             }

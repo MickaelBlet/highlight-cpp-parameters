@@ -97,10 +97,40 @@ class Parser {
         text = text.replace(/"[^]*?(?:(?<!\\)")|'[^]*?(?:(?<!\\)')|\/\*[^]*?\*\/|\/\/[^]*?(?:(?<!\\)$)/gm, replacer);
         // replace define line
         text = text.replace(/#[^]*?(?:(?<!\\)$)/gm, replacer);
-        // replace compiler macro
-        text = text.replace(/\b(?:__[a-z_A-Z]+__|throw|noexcept|alignas|decltype)\b\s*[(][^);]*(?:[)\s]+)/gm, replacer);
         // replace enum
         text = text.replace(/\benum\b\s*(?:struct|class)?\s*(?:\b[a-z_A-Z0-9]+\b)?\s*(?:[:][^]*?(?:}\s*;)+|{[^]*?(?:}\s*;))/gm, replacer);
+
+        // str to array
+        let textArray = text.split('')
+
+        // replace end function
+        let search;
+        let regEx = /\b(__[a-z_A-Z]+(?:__)?|throw|noexcept|alignas|decltype)\s*[(]/gm;
+        while (search = regEx.exec(text)) {
+            let level = 0;
+            for (let i = search.index + search[1].length ; i < text.length ; i++) {
+                if (text[i] == '{' || text[i] == '}') {
+                    textArray[i] = ' '; // delete in parenthesis
+                }
+                if (text[i] == '(') {
+                    textArray[i] = ' '; // delete in parenthesis
+                    level++;
+                }
+                else if (text[i] == ')') {
+                    textArray[i] = ' '; // delete in parenthesis
+                    level--;
+                    if (level == 0) {
+                        textArray[search.index] = ':'; // simulate constructor
+                        break;
+                    }
+                }
+            }
+        }
+
+        // array to str
+        text = textArray.join('');
+        // replace all keyword type
+        text = text.replace(/\b(?:reinterpret_cast|atomic_noexcept|atomic_commit|atomic_cancel|__has_include|synchronized|dynamic_cast|thread_local|static_cast|const_cast|co_return|constexpr|constexpr|constexpr|co_return|protected|namespace|consteval|noexcept|decltype|template|operator|noexcept|co_yield|co_await|reflexpr|continue|co_await|co_yield|requires|volatile|register|restrict|explicit|volatile|noexcept|typename|default|_Pragma|mutable|include|concept|alignas|virtual|alignof|__asm__|defined|mutable|typedef|warning|private|and_eq|define|pragma|typeid|switch|bitand|return|ifndef|export|struct|sizeof|module|static|public|extern|inline|friend|delete|xor_eq|import|not_eq|class|compl|bitor|throw|or_eq|while|catch|break|union|const|const|endif|ifdef|undef|error|using|else|line|goto|else|elif|this|enum|case|new|asm|not|try|for|and|xor|or|if|do|if)\b/gm, replacer);
 
         return text;
     }
@@ -217,7 +247,7 @@ class Parser {
         let text = this.text.substr(start, end - start);
         text = this.containerHidden(text);
         let search;
-        let regEx = /([a-z_A-Z0-9]+(?:::[&*]+)?\s*[&*]*\s*(?:[(][&*]*)?)\b([a-z_A-Z][a-z_A-Z0-9]*)\s*(?:,|=[^,]*(?:,|[)(])|\[[^\]]*\]|[)(])\s*/gm;
+        let regEx = /([a-z_A-Z0-9]+(?:::[&*]+)?\s*[&*]*\s*(?:[(][&*]*\s*)?)\b([a-z_A-Z][a-z_A-Z0-9]*)\s*(?:,|=[^,]*(?:,|[)(])|\[[^\]]*\]|[)][^,(]*|[(][^,]*)\s*/gm;
         while (search = regEx.exec(text)) {
             if (search[0].length == 0) {
                 continue ;
@@ -282,7 +312,6 @@ class Parser {
                 let words = wordsAndRanges[0];
                 let ranges = wordsAndRanges[1];
                 for (let i = 0; i < words.length; i++) {
-                    this.log(words[i]);
                     this.ranges.push(ranges[i]);
                 }
             }

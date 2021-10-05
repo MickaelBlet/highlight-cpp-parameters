@@ -1,10 +1,12 @@
 const vscode = require("vscode");
 const parser = require("./src/parser");
 
+const nameOfProperties = "highlight-cpp-parameters";
+
 function activate(context) {
     let activeEditor;
     let logger = vscode.window.createOutputChannel("Highlight C/C++ parameters");
-    let contributions = vscode.workspace.getConfiguration('highlight-cpp-parameters');
+    let contributions = vscode.workspace.getConfiguration(nameOfProperties);
     let parserObj = new parser.Parser(logger, contributions);
 
     // function call by triggerUpdateDecorations
@@ -30,7 +32,7 @@ function activate(context) {
 
     // event configuration change
     vscode.workspace.onDidChangeConfiguration(event => {
-        contributions = vscode.workspace.getConfiguration('highlight-cpp-parameters');
+        contributions = vscode.workspace.getConfiguration(nameOfProperties);
         let textEditors = vscode.window.visibleTextEditors;
         for (let i = 0 ; i < textEditors.length ; i++) {
             parserObj.resetDecorations(textEditors[i]);
@@ -77,6 +79,6 @@ function activate(context) {
 function desactivate() {}
 
 module.exports = {
-	activate,
-	desactivate
+    activate,
+    desactivate
 }
