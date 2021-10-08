@@ -1,3 +1,27 @@
+/*
+MIT License
+
+Copyright (c) 2021 Mickaël Blet
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
 const vscode = require("vscode");
 const path = require("path");
 
@@ -27,13 +51,13 @@ class Parser {
     log(text) {
         let date = new Date()
         this.logger.appendLine('[' +
-            ("0" + date.getFullYear()).slice(-4) + '-' +
+            ("000" + date.getFullYear()).slice(-4) + '-' +
             ("0" + date.getDate()).slice(-2) + '-' +
             ("0" + (date.getMonth() + 1)).slice(-2) + ' ' +
             ("0" + date.getHours()).slice(-2) + ':' +
             ("0" + date.getMinutes()).slice(-2) + ':' +
             ("0" + date.getSeconds()).slice(-2) + '.' +
-            ("0" + date.getMilliseconds()).slice(-3) + "] " +
+            ("00" + date.getMilliseconds()).slice(-3) + "] " +
             text);
     }
 
@@ -120,7 +144,7 @@ class Parser {
                     textArray[i] = ' '; // delete in parenthesis
                     level--;
                     if (level == 0) {
-                        textArray[search.index] = ':'; // simulate constructor
+                        textArray[search.index + search[1].length] = ':'; // simulate constructor
                         break;
                     }
                 }
