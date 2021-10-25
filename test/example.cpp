@@ -1,17 +1,12 @@
 #include "cstdio"
 
-void useless(int unused);
-
-void functionParameter(void (*functionPtr)(int)) {
-    functionPtr(42);
-    return ;
+void functionParameter(void (*functionPtr)(int), int value) {
+    functionPtr(value);
 }
 
-void useless(int unused) {
-    return ;
-}
+void doNothing(int unused) {}
 
-int main(int argc, char* argv[], char **env) {
+int main(int argc, char* argv[]) {
     printf("Program name:   \"%s\"\n", argv[0]);
     printf("Number of args: %d\n", argc - 1);
     if (argc > 1) {
@@ -20,5 +15,5 @@ int main(int argc, char* argv[], char **env) {
             printf(" - \"%s\"\n", argv[i]);
         }
     }
-    functionParameter(&useless);
+    functionParameter(&doNothing, 42);
 }
