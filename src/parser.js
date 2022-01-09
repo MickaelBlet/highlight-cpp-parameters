@@ -154,7 +154,7 @@ class Parser {
         // array to str
         text = textArray.join('');
         // replace all keyword type
-        text = text.replace(/\b(?:reinterpret_cast|atomic_noexcept|atomic_commit|atomic_cancel|__has_include|synchronized|dynamic_cast|thread_local|static_cast|const_cast|co_return|constexpr|constexpr|constexpr|co_return|protected|namespace|consteval|noexcept|decltype|template|operator|noexcept|co_yield|co_await|reflexpr|continue|co_await|co_yield|requires|volatile|register|restrict|explicit|volatile|noexcept|typename|default|_Pragma|mutable|include|concept|alignas|virtual|alignof|__asm__|defined|mutable|typedef|warning|private|and_eq|define|pragma|typeid|switch|bitand|return|ifndef|export|struct|sizeof|module|static|public|extern|inline|friend|delete|xor_eq|import|not_eq|class|compl|bitor|throw|or_eq|while|catch|break|union|const|const|endif|ifdef|undef|error|using|else|line|goto|else|elif|this|enum|case|new|asm|not|try|for|and|xor|or|if|do|if)\b/gm, replacer);
+        text = text.replace(/\b(?:noexcept|decltype|alignas|struct|static|union|const|throw)\b/gm, replacer);
 
         return text;
     }
