@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021 Mickaël Blet
+Copyright (c) 2022 Mickaël Blet
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,21 +25,13 @@ SOFTWARE.
 const vscode = require("vscode");
 const parser = require("./src/parser");
 
-const nameOfProperties = "highlight-cpp-parameters";
+const nameOfProperties = "highlight.cpp-parameters";
 
 function activate(context) {
     let activeEditor;
+    let configuration = vscode.workspace.getConfiguration(nameOfProperties);
     let logger = vscode.window.createOutputChannel("Highlight C/C++ parameters");
-    let contributions = vscode.workspace.getConfiguration(nameOfProperties);
-    let parserObj = new parser.Parser(logger, contributions);
-
-    // function call by triggerUpdateDecorations
-    let updateDecorations = function (useHash = false) {
-        if (!activeEditor) {
-            return ;
-        }
-        parserObj.updateDecorations(activeEditor);
-    };
+    let parserObj = new parser.Parser(logger, configuration);
 
     // first launch
     if (vscode.window.visibleTextEditors.length > 0) {
@@ -53,6 +45,15 @@ function activate(context) {
     if (vscode.window.activeTextEditor) {
         activeEditor = vscode.window.activeTextEditor;
     }
+
+    // function call by triggerUpdateDecorations
+    let updateDecorations = function () {
+        if (!activeEditor) {
+            return ;
+        }
+        parserObj.updateDecorations(activeEditor);
+    };
+
 
     // event configuration change
     vscode.workspace.onDidChangeConfiguration(event => {
@@ -96,7 +97,7 @@ function activate(context) {
         if (timeout) {
             clearTimeout(timeout);
         }
-        timeout = setTimeout(updateDecorations, contributions.timeout);
+        timeout = setTimeout(updateDecorations, configuration.timeout);
     }
 }
 

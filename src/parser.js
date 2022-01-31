@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2021 Mickaël Blet
+Copyright (c) 2022 Mickaël Blet
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -27,25 +27,35 @@ const path = require("path");
 
 class Parser {
 
-    constructor(logger, contributions) {
+    constructor(logger, configuration) {
         this.activeEditor;
         this.logger = logger;
         this.text;
+        this.excludeWordsRegex = null;
         this.decorationParameter;
         this.decorationUnusedParameter;
         this.ranges = [];
         this.unusedRanges = [];
-        this.loadConfigurations(contributions);
+        this.loadConfigurations(configuration);
     }
 
     //
     // PUBLIC
     //
 
-    // load configuration from contributions
-    loadConfigurations(contributions) {
-        this.decorationParameter = vscode.window.createTextEditorDecorationType(contributions.parameterCss);
-        this.decorationUnusedParameter = vscode.window.createTextEditorDecorationType(contributions.unusedParameterCss);
+    // load from configuration
+    loadConfigurations(configuration) {
+        this.decorationParameter = vscode.window.createTextEditorDecorationType(configuration.parameterCss);
+        this.decorationUnusedParameter = vscode.window.createTextEditorDecorationType(configuration.unusedParameterCss);
+        if (configuration.excludeWords.length > 0) {
+            this.excludeWordsRegex = new RegExp("\\b(" +
+                                            configuration.excludeWords.join("|") +
+                                            ")\\b",
+                                            "gm");
+        }
+        else {
+            this.excludeWordsRegex = null;
+        }
     }
 
     log(text) {
@@ -154,7 +164,11 @@ class Parser {
         // array to str
         text = textArray.join('');
         // replace all keyword type
-        text = text.replace(/\b(?:noexcept|decltype|alignas|struct|static|union|const|throw)\b/gm, replacer);
+        text = text.replace(/\b(?:throw|noexcept|alignas|decltype|struct|static|union|const)\b/gm, replacer);
+        // replace exclude word
+        if (this.excludeWordsRegex != null) {
+            text = text.replace(this.excludeWordsRegex, replacer);
+        }
 
         return text;
     }
@@ -271,7 +285,7 @@ class Parser {
         let text = this.text.substr(start, end - start);
         text = this.containerHidden(text);
         let search;
-        let regEx = /([a-z_A-Z0-9]+(?:::[&*]+)?\s*[&*]*\s*(?:[(][&*]*\s*)?)\b([a-z_A-Z][a-z_A-Z0-9]*)\s*(?:,|=[^,]*(?:,|[)(])|\[[^\]]*\]|[)][^,(]*|[(][^,]*)\s*/gm;
+        let regEx = /([a-z_A-Z0-9]+(?:::[&*\s]+)?[&*\s]*(?:[(][&*\s]*)?)\b([a-z_A-Z][a-z_A-Z0-9]*)\s*(?:,|=[^,]*(?:,|[)(])|\[[^\]]*\]|[)][^,(]*|[(][^,]*)\s*/gm;
         while (search = regEx.exec(text)) {
             if (search[0].length == 0) {
                 continue ;
