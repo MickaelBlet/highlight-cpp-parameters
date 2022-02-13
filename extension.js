@@ -57,12 +57,12 @@ function activate(context) {
 
     // event configuration change
     vscode.workspace.onDidChangeConfiguration(event => {
-        contributions = vscode.workspace.getConfiguration(nameOfProperties);
+        configuration = vscode.workspace.getConfiguration(nameOfProperties);
         let textEditors = vscode.window.visibleTextEditors;
         for (let i = 0 ; i < textEditors.length ; i++) {
             parserObj.resetDecorations(textEditors[i]);
         }
-        parserObj.loadConfigurations(contributions);
+        parserObj.loadConfigurations(configuration);
         for (let i = 0 ; i < textEditors.length ; i++) {
             parserObj.updateDecorations(textEditors[i]);
         }
