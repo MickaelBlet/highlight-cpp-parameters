@@ -154,7 +154,22 @@ class Parser {
                     textArray[i] = ' '; // delete in parenthesis
                     level--;
                     if (level == 0) {
-                        textArray[search.index + search[1].length] = ':'; // simulate constructor
+                        let isPrototype = false;
+                        for (let j = i + 1 ; j < text.length ; j++) {
+                            if (text[j] == ' ' || text[j] == '\t' || text[j] == '\r' || text[j] == '\n') {
+                                continue;
+                            }
+                            else if (text[j] == ';') {
+                                isPrototype = true;
+                                break;
+                            }
+                            else {
+                                break;
+                            }
+                        }
+                        if (isPrototype == false) {
+                            textArray[search.index + search[1].length] = ':'; // simulate constructor
+                        }
                         break;
                     }
                 }
@@ -169,6 +184,8 @@ class Parser {
         if (this.excludeWordsRegex != null) {
             text = text.replace(this.excludeWordsRegex, replacer);
         }
+
+        // this.log(text)
 
         return text;
     }
@@ -264,7 +281,10 @@ class Parser {
     getCloseBraceIndex(index, isConstructor) {
         let level = 0 - isConstructor;
         for (let i = index ; i < this.text.length ; i++) {
-            if (level == 0 && this.text[i] == "}") {
+            if (level < 0 && this.text[i] == ";") {
+                return i;
+            }
+            else if (level == 0 && this.text[i] == "}") {
                 return i;
             }
             else if (level > 0 && this.text[i] == "}") {
@@ -285,7 +305,7 @@ class Parser {
         let text = this.text.substr(start, end - start);
         text = this.containerHidden(text);
         let search;
-        let regEx = /([a-z_A-Z0-9]+(?:::[&*\s]+)?[&*\s]*(?:[(][&*\s]*)?)\b([a-z_A-Z][a-z_A-Z0-9]*)\s*(?:,|=[^,]*(?:,|[)(])|\[[^\]]*\]|[)][^,(]*|[(][^,]*)\s*/gm;
+        let regEx = /([a-z_A-Z0-9]+(?:::[&*\s]+)?[&*\s]*(?:[.][.][.][&*\s]*)?(?:[(][&*\s]*)?)\b([a-z_A-Z][a-z_A-Z0-9]*)\s*(?:,|=[^,]*(?:,|[)(])|\[[^\]]*\]|[)][^,(]*|[(][^,]*)\s*/gm;
         while (search = regEx.exec(text)) {
             if (search[0].length == 0) {
                 continue ;
