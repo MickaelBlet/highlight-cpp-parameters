@@ -34,6 +34,12 @@ function activate(context) {
     let logger = vscode.window.createOutputChannel("Highlight C/C++ parameters");
     let parserObj = new parser.Parser(logger, configuration);
 
+    // first launch
+    let visibleTextEditors = vscode.window.visibleTextEditors;
+    for (let i = 0; i < visibleTextEditors.length; i++) {
+        triggerUpdate(visibleTextEditors[i]);
+    }
+
     // event configuration change
     vscode.workspace.onDidChangeConfiguration(event => {
         configuration = vscode.workspace.getConfiguration(nameOfProperties);
