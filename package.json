@@ -1,13 +1,14 @@
 {
     "name": "highlight-cpp-parameters",
     "displayName": "Highlight - C/C++ Parameters",
-    "description": "Highlight parameters for C/C++ languages",
-    "version": "0.2.1",
+    "description": "Highlight (decorate) parameters for C/C++ languages",
+    "version": "0.3.0",
     "publisher": "mblet",
     "engines": {
         "vscode": "^1.0.0"
     },
     "main": "./extension.js",
+    "browser": "./extension.js",
     "license": "MIT",
     "repository": {
         "type": "git",
@@ -19,6 +20,7 @@
     "categories": [
         "Visualization"
     ],
+    "icon": "images/icon.drawio.png",
     "contributes": {
         "configuration": {
             "properties": {
@@ -815,8 +817,13 @@
                         }
                     },
                     "default": {
-                        "color": "#999999",
-                        "fontStyle": "italic"
+                        "fontStyle": "italic",
+                        "light": {
+                            "color": "#777777"
+                        },
+                        "dark": {
+                            "color": "#999999"
+                        }
                     }
                 },
                 "highlight.cpp-parameters.unusedParameterCss": {
@@ -1598,10 +1605,15 @@
                         }
                     },
                     "default": {
-                        "color": "#DD8888",
                         "fontStyle": "italic",
-                        "overviewRulerColor": "#DD8888",
-                        "overviewRulerLane": 4
+                        "overviewRulerColor": "#DD8888FF",
+                        "overviewRulerLane": 4,
+                        "light": {
+                            "color": "#AA4444"
+                        },
+                        "dark": {
+                            "color": "#DD8888"
+                        }
                     }
                 }
             }
