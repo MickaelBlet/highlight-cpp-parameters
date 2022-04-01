@@ -152,7 +152,7 @@ class Parser {
             // array to str
             text = textArray.join('');
             // replace all keyword type
-            text = text.replace(/\b(?:throw|noexcept|alignas|decltype|struct|static|union|const)\b/gm, replacer);
+            text = text.replace(/\b(?:throw|noexcept|alignas|decltype|struct|static|union|const|sizeof)\b/gm, replacer);
             // replace exclude word
             if (this.excludeWordsRegex != null) {
                 text = text.replace(new RegExp(this.excludeWordsRegex, 'gm'), replacer);
@@ -164,16 +164,45 @@ class Parser {
         // replace <[...]> by spaces
         var containerHidden = (text) => {
             let level = 0;
+            let levelParenthesis = 0;
             let start;
             let end;
-            if (text.indexOf("<") >= 0) {
+            if (text.indexOf('<') >= 0) {
                 for (let i = 0 ; i < text.length ; i++) {
-                    if (text[i] == "<") {
+                    if (text[i] == '(' && level > 0) {
+                        for (let j = i ; j < text.length ; j++) {
+                            if (text[j] == '(') {
+                                levelParenthesis++;
+                            }
+                            else if (text[i] == ')') {
+                                levelParenthesis--;
+                                if (levelParenthesis == 0) {
+                                    i = j;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (text[i] == '{') {
+                        for (let j = i ; j < text.length ; j++) {
+                            if (text[j] == '{') {
+                                levelParenthesis++;
+                            }
+                            else if (text[i] == '}') {
+                                levelParenthesis--;
+                                if (levelParenthesis == 0) {
+                                    i = j;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    if (text[i] == '<') {
                         level++;
                         if (level == 1)
                             start = i;
                     }
-                    else if (text[i] == ">") {
+                    else if (text[i] == '>') {
                         level--;
                         if (level == 0) {
                             end = i;
@@ -183,14 +212,14 @@ class Parser {
                 }
             }
             level = 0;
-            if (text.indexOf("{") >= 0) {
+            if (text.indexOf('{') >= 0) {
                 for (let i = 0 ; i < text.length ; i++) {
-                    if (text[i] == "{") {
+                    if (text[i] == '{') {
                         level++;
                         if (level == 1)
                             start = i;
                     }
-                    else if (text[i] == "}") {
+                    else if (text[i] == '}') {
                         level--;
                         if (level == 0) {
                             end = i;
@@ -216,20 +245,20 @@ class Parser {
 
             let level = 1;
             for (let i = startParenthesis + 1 ; i < this.text.length ; i++) {
-                if (this.text[i] == ":" && i + 1 < this.text.length && this.text[i+1] == ":") {
+                if (this.text[i] == ':' && i + 1 < this.text.length && this.text[i+1] == ':') {
                     i++;
                 }
-                else if (level == 0 && (this.text[i] == ":" || this.text[i] == "{" || this.text[i] == ";")) {
+                else if (level == 0 && (this.text[i] == ':' || this.text[i] == '{' || this.text[i] == ';')) {
                     return [startParenthesis, i];
                 }
-                else if (level > 0 && this.text[i] == ")") {
+                else if (level > 0 && this.text[i] == ')') {
                     level--;
                 }
-                else if (level == 0 && this.text[i] == "(") {
+                else if (level == 0 && this.text[i] == '(') {
                     startParenthesis = i;
                     level = 1;
                 }
-                else if (this.text[i] == "(") {
+                else if (this.text[i] == '(') {
                     level++;
                 }
             }
@@ -239,10 +268,10 @@ class Parser {
 
         var getOpenBraceIndex = (index) => {
             for (let i = index ; i < this.text.length ; i++) {
-                if (this.text[i] == "(" || this.text[i] == ";") {
+                if (this.text[i] == '(' || this.text[i] == ';') {
                     return null;
                 }
-                if (this.text[i] == ":" || this.text[i] == "{") {
+                if (this.text[i] == ':' || this.text[i] == '{') {
                     return i;
                 }
             }
@@ -252,16 +281,30 @@ class Parser {
         var getCloseBraceIndex = (index, isConstructor) => {
             let level = 0 - isConstructor;
             for (let i = index ; i < this.text.length ; i++) {
-                if (level < 0 && this.text[i] == ";") {
+                if (level < 0 && this.text[i] == ';') {
                     return i;
                 }
-                else if (level == 0 && this.text[i] == "}") {
-                    return i;
+                else if (level == 0 && this.text[i] == '}') {
+                    if (isConstructor) {
+                        let save = i;
+                        i++;
+                        while (/\s/g.test(this.text[i])) {
+                            i++;
+                        }
+                        if (this.text[i] != ',' && this.text[i] != '{') {
+                            return save;
+                        }
+                        level--;
+                        i--;
+                    }
+                    else {
+                        return i;
+                    }
                 }
-                else if (level > 0 && this.text[i] == "}") {
+                else if (level > 0 && this.text[i] == '}') {
                     level--;
                 }
-                else if (this.text[i] == "{") {
+                else if (this.text[i] == '{') {
                     level++;
                 }
             }

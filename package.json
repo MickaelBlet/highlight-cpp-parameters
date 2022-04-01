@@ -2,10 +2,10 @@
     "name": "highlight-cpp-parameters",
     "displayName": "Highlight - C/C++ Parameters",
     "description": "Highlight (decorate) parameters for C/C++ languages",
-    "version": "0.3.0",
+    "version": "0.3.2",
     "publisher": "mblet",
     "engines": {
-        "vscode": "^1.0.0"
+        "vscode": "^0.0.0"
     },
     "main": "./extension.js",
     "browser": "./extension.js",
@@ -18,7 +18,8 @@
         "onStartupFinished"
     ],
     "categories": [
-        "Visualization"
+        "Visualization",
+        "Other"
     ],
     "icon": "images/icon.drawio.png",
     "contributes": {
@@ -50,6 +51,7 @@
                         "after": {
                             "type": "object",
                             "title": "after",
+                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
                             "properties": {
                                 "backgroundColor": {
                                     "type": "string",
@@ -121,6 +123,7 @@
                         "before": {
                             "type": "object",
                             "title": "before",
+                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
                             "properties": {
                                 "backgroundColor": {
                                     "type": "string",
@@ -226,12 +229,14 @@
                         },
                         "dark": {
                             "type": "object",
-                            "title": "before",
+                            "title": "dark",
+                            "description": "Overwrite options for dark themes.",
                             "properties": {
                                 "after": {
                                     "type": "object",
                                     "title": "after",
-                                    "properties": {
+                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                            "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
@@ -302,7 +307,8 @@
                                 "before": {
                                     "type": "object",
                                     "title": "before",
-                                    "properties": {
+                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                            "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
@@ -514,12 +520,14 @@
                         },
                         "light": {
                             "type": "object",
-                            "title": "before",
+                            "title": "light",
+                            "description": "Overwrite options for light themes.",
                             "properties": {
                                 "after": {
                                     "type": "object",
                                     "title": "after",
-                                    "properties": {
+                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                            "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
@@ -590,7 +598,8 @@
                                 "before": {
                                     "type": "object",
                                     "title": "before",
-                                    "properties": {
+                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                            "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
@@ -838,6 +847,7 @@
                         "after": {
                             "type": "object",
                             "title": "after",
+                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
                             "properties": {
                                 "backgroundColor": {
                                     "type": "string",
@@ -909,6 +919,7 @@
                         "before": {
                             "type": "object",
                             "title": "before",
+                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
                             "properties": {
                                 "backgroundColor": {
                                     "type": "string",
@@ -1014,12 +1025,14 @@
                         },
                         "dark": {
                             "type": "object",
-                            "title": "before",
+                            "title": "dark",
+                            "description": "Overwrite options for dark themes.",
                             "properties": {
                                 "after": {
                                     "type": "object",
                                     "title": "after",
-                                    "properties": {
+                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                            "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
@@ -1090,7 +1103,8 @@
                                 "before": {
                                     "type": "object",
                                     "title": "before",
-                                    "properties": {
+                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                            "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
@@ -1302,12 +1316,14 @@
                         },
                         "light": {
                             "type": "object",
-                            "title": "before",
+                            "title": "light",
+                            "description": "Overwrite options for light themes.",
                             "properties": {
                                 "after": {
                                     "type": "object",
                                     "title": "after",
-                                    "properties": {
+                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                            "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
@@ -1378,7 +1394,8 @@
                                 "before": {
                                     "type": "object",
                                     "title": "before",
-                                    "properties": {
+                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                            "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
