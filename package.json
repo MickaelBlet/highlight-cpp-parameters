@@ -2,7 +2,7 @@
     "name": "highlight-cpp-parameters",
     "displayName": "Highlight - C/C++ Parameters",
     "description": "Highlight (decorate) parameters for C/C++ languages",
-    "version": "0.3.2",
+    "version": "0.3.3",
     "publisher": "mblet",
     "engines": {
         "vscode": "^0.0.0"
@@ -235,8 +235,8 @@
                                 "after": {
                                     "type": "object",
                                     "title": "after",
-                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
-                            "properties": {
+                                    "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                                    "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
@@ -307,8 +307,8 @@
                                 "before": {
                                     "type": "object",
                                     "title": "before",
-                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
-                            "properties": {
+                                    "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                                    "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
@@ -526,8 +526,8 @@
                                 "after": {
                                     "type": "object",
                                     "title": "after",
-                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
-                            "properties": {
+                                    "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                                    "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
@@ -598,8 +598,8 @@
                                 "before": {
                                     "type": "object",
                                     "title": "before",
-                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
-                            "properties": {
+                                    "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                                    "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
@@ -1031,8 +1031,8 @@
                                 "after": {
                                     "type": "object",
                                     "title": "after",
-                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
-                            "properties": {
+                                    "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                                    "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
@@ -1103,8 +1103,8 @@
                                 "before": {
                                     "type": "object",
                                     "title": "before",
-                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
-                            "properties": {
+                                    "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                                    "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
@@ -1322,8 +1322,8 @@
                                 "after": {
                                     "type": "object",
                                     "title": "after",
-                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
-                            "properties": {
+                                    "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                                    "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",
@@ -1394,8 +1394,8 @@
                                 "before": {
                                     "type": "object",
                                     "title": "before",
-                            "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
-                            "properties": {
+                                    "description": "Defines the rendering options of the attachment that is inserted after the decorated text.",
+                                    "properties": {
                                         "backgroundColor": {
                                             "type": "string",
                                             "title": "backgroundColor",

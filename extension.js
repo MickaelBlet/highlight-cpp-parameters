@@ -104,8 +104,6 @@ class Parser {
             text = text.replace(/"[^]*?(?:(?<!\\)")|'[^]*?(?:(?<!\\)')|\/\*[^]*?\*\/|\/\/[^]*?(?:(?<!\\)$)/gm, replacer);
             // replace define line
             text = text.replace(/#[^]*?(?:(?<!\\)$)/gm, replacer);
-            // replace enum
-            text = text.replace(/\benum\b\s*(?:struct|class)?\s*(?:\b[a-z_A-Z0-9]+\b)?\s*(?:[:][^]*?(?:}\s*;)+|{[^]*?(?:}\s*;))/gm, replacer);
 
             // str to array
             let textArray = text.split('')
