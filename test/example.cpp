@@ -36,11 +36,21 @@ void functionPtr4(unsigned int functionPtr(int), unsigned int value = 10){
 }
 void functionPtr5(unsigned int *functionPtr(int), unsigned int value = 10);
 void functionPtr6(unsigned int *functionPtr(int[8]), unsigned int value = 10);
+void functionPtr6(unsigned int functionPtr(int[8]), unsigned int value = 10);
 void functionPtr3(unsigned int (*functionPtr)(int), unsigned int value = 10);
 void functionPtr2(unsigned int (((*functionPtr)))(int, unsigned int (*test)(unsigned int)), unsigned int value = 10);
 void functionPtr2(unsigned int (   (   (*functionPtr)  )   (  int  )  ), unsigned int value = 10);
 
 void table(const unsigned int (((&arr)))[8]);
+void table(const unsigned (((&arr)))[8]);
+
+template<typename T>
+void parenthesis(volatile T (func));
+
+template<typename T>
+void parenthesis2(T (a[]));
+template<typename T>
+void parenthesis2(T (T[]));
 
 void functionParameter3(std::map<std::string, std::string> test, int value) {
 }
@@ -54,7 +64,7 @@ unsigned int doNothing2(unsigned int unused) {}
 
 unsigned int doNothing(unsigned int unused, unsigned int (*unused2)(unsigned int)) {}
 
-int main(int argc, char* argv[]) {
+int main(int argc, char(* argv[])) {
     printf("Program name:   \"%s\"\n", argv[0]);
     printf("Number of args: %d\n", argc - 1);
     if (argc > 1) {

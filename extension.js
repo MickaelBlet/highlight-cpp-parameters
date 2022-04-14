@@ -29,7 +29,8 @@ class Parser {
     constructor(logger, configuration) {
         this.logger = logger;
         this.text;
-        this.excludeWordsRegex = null;
+        this.excludeRegexes = [];
+        this.languageIds = [];
         this.decorationParameter;
         this.decorationUnusedParameter;
         this.loadConfigurations(configuration);
@@ -41,13 +42,27 @@ class Parser {
 
     // load from configuration
     loadConfigurations(configuration) {
-        this.decorationParameter = vscode.window.createTextEditorDecorationType(configuration.parameterCss);
-        this.decorationUnusedParameter = vscode.window.createTextEditorDecorationType(configuration.unusedParameterCss);
-        if (configuration.excludeWords.length > 0) {
-            this.excludeWordsRegex = "\\b(" + configuration.excludeWords.join("|") + ")\\b";
+        try {
+            this.decorationParameter = vscode.window.createTextEditorDecorationType(configuration.parameterCss);
+            this.decorationUnusedParameter = vscode.window.createTextEditorDecorationType(configuration.unusedParameterCss);
+            this.excludeRegexes.length = 0;
+            for (let i = 0 ; i < configuration.excludeRegexes.length ; i++) {
+                try {
+                    let regex = new RegExp(configuration.excludeRegexes[i], "gm")
+                    regex.test();
+                    this.excludeRegexes.push(regex);
+                }
+                catch (e) {
+                    this.log(e);
+                    console.error(e);
+                }
+            }
+            this.languageIds.length = 0;
+            this.languageIds = configuration.languageIds;
         }
-        else {
-            this.excludeWordsRegex = null;
+        catch (e) {
+            this.log(e);
+            console.error(e);
         }
     }
 
@@ -68,9 +83,6 @@ class Parser {
         if (!editor) {
             return ;
         }
-        if (editor.document.languageId != "c" && editor.document.languageId != "cpp") {
-            return ;
-        }
         // disable old decoration
         editor.setDecorations(this.decorationParameter, []);
         editor.setDecorations(this.decorationUnusedParameter, []);
@@ -80,7 +92,7 @@ class Parser {
         if (!editor) {
             return ;
         }
-        if (editor.document.languageId != "c" && editor.document.languageId != "cpp") {
+        if (this.languageIds.indexOf(editor.document.languageId) < 0) {
             return ;
         }
         let rangeParameters = [];
@@ -150,10 +162,14 @@ class Parser {
             // array to str
             text = textArray.join('');
             // replace all keyword type
-            text = text.replace(/(?:\bthrow\b|\bnoexcept\b|\balignas\b|(?:->\s*)?\bdecltype\b|\bstruct\b|\bstatic\b|\bunion\b|\bconst\b|\bsizeof\b|\boverride\b)/gm, replacer);
+            text = text.replace(/(?:\bthrow\b|\bnoexcept\b|\balignas\b|(?:->\s*)?\bdecltype\b|\bstruct\b|\bstatic\b|\bunion\b|\bconst\b|\bsizeof\b|\boverride\b|\bvolatile\b|\bsigned\b)/gm, replacer);
+            function replacerByInt(str, offset, input) {
+                return ' '.repeat(str.length - 3) + 'int';
+            }
+            text = text.replace(/\bunsigned\b|\bsigned\b/gm, replacerByInt);
             // replace exclude word
-            if (this.excludeWordsRegex != null) {
-                text = text.replace(new RegExp(this.excludeWordsRegex, 'gm'), replacer);
+            for (let i = 0 ; i < this.excludeRegexes.length ; i++) {
+                text = text.replace(this.excludeRegexes[i], replacer);
             }
 
             this.text = text;
@@ -319,7 +335,7 @@ class Parser {
             }
             for (let i = 0 ; i < bracketLevelIndex.length ; i++) {
                 if (bracketLevelIndex[i].type === '[]') {
-                    if (i > 0 && bracketLevelIndex[i - 1].type !== '[]') {
+                    if (i > 0 && bracketLevelIndex[i - 1].type !== '[]' && bracketLevelIndex[i - 1].level == bracketLevelIndex[i].level) {
                         // search same level and same type before bracket
                         for (let j = i - 2; j >= 0; j--) {
                             if (bracketLevelIndex[i - 1].level === bracketLevelIndex[j].level && bracketLevelIndex[i - 1].type === bracketLevelIndex[j].type) {
@@ -474,8 +490,14 @@ class Parser {
                     }
                 }
                 else {
-                    // delete inside parenthesis
-                    text = replaceBySpace(text, parenthesisLevelIndex[0].index, parenthesisLevelIndex[parenthesisLevelIndex.length-1].index + 1);
+                    if (/([a-z_A-Z0-9]+(?:::[&*\s]+)?[&*\s]*(?:[.][.][.][&*\s]*)?)\b([a-z_A-Z][a-z_A-Z0-9]*)\s*$/gm.test(text.substr(0, parenthesisLevelIndex[0].index))) {
+                        // delete inside parenthesis
+                        text = replaceBySpace(text, parenthesisLevelIndex[0].index, parenthesisLevelIndex[parenthesisLevelIndex.length-1].index + 1);
+                    }
+                    else {
+                        text = replaceBySpace(text, parenthesisLevelIndex[0].index, parenthesisLevelIndex[0].index + 1);
+                        text = replaceBySpace(text, parenthesisLevelIndex[parenthesisLevelIndex.length-1].index, parenthesisLevelIndex[parenthesisLevelIndex.length-1].index + 1);
+                    }
                 }
             }
             return text;
@@ -591,7 +613,6 @@ class Parser {
             let startArg = 0;
             let defaultValue = 0;
             let hasParenthesis = false;
-            let hasBracket = false;
             for (let i = 0 ; i < text.length ; i++) {
                 switch (text[i]) {
                     case ',':
@@ -601,8 +622,7 @@ class Parser {
                         argsRanges.push({
                             start: startArg,
                             end: i,
-                            hasParenthesis: hasParenthesis,
-                            hasBracket: hasBracket
+                            hasParenthesis: hasParenthesis
                         });
                         startArg = i + 1;
                         defaultValue = 0;
@@ -628,7 +648,6 @@ class Parser {
                         text = replaceBySpace(text, startChevron, i + 1);
                         break;
                     case '[':
-                        hasBracket = true;
                         i = jumpToEndOfBracket(text, i);
                         break;
                     default:
@@ -642,8 +661,7 @@ class Parser {
             argsRanges.push({
                 start: startArg,
                 end: text.length,
-                hasParenthesis: hasParenthesis,
-                hasBracket: hasBracket
+                hasParenthesis: hasParenthesis
             });
 
             // detect type of argument
@@ -655,10 +673,7 @@ class Parser {
                     // remove extra parenthesis ((foo))(((bar)))((foo,bar))((foo)(bar)) -> .(foo)...(bar)...(foo,bar)..(foo)(bar).
                     parameter = removeExtraParenthesis(parameter);
                 }
-                if (argsRanges[i].hasBracket === true) {
-                    // remove extra bracket (foo)[]/foo[] -> foo
-                    parameter = removeExtraBracket(parameter);
-                }
+                parameter = removeExtraBracket(parameter);
                 if (argsRanges[i].hasParenthesis === true) {
                     // remove extra parenthesis (foo)(bar),foo(bar) -> .foo.....,foo.....
                     parameter = removeExtraParenthesis2(parameter);

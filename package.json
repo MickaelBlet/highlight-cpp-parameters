@@ -2,7 +2,7 @@
     "name": "highlight-cpp-parameters",
     "displayName": "Highlight - C/C++ Parameters",
     "description": "Highlight (decorate) parameters for C/C++ languages",
-    "version": "0.4.0",
+    "version": "0.5.0",
     "publisher": "mblet",
     "engines": {
         "vscode": "^0.0.0"
@@ -25,14 +25,23 @@
     "contributes": {
         "configuration": {
             "properties": {
-                "highlight.cpp-parameters.excludeWords": {
+                "highlight.cpp-parameters.excludeRegexes": {
                     "type": "array",
-                    "markdownDescription": "Set the exclude words in editor",
+                    "title": "Exclude regexes",
+                    "markdownDescription": "Set the exclude regexes in editor",
                     "items": {
-                        "type": "string",
-                        "title": "exclude word"
+                        "type": "string"
                     },
                     "default": []
+                },
+                "highlight.cpp-parameters.languageIds": {
+                    "type": "array",
+                    "title": "Language Ids",
+                    "markdownDescription": "Set the language ID for activte the highlight",
+                    "items": {
+                        "type": "string"
+                    },
+                    "default": [ "c", "cpp", "cuda-cpp" ]
                 },
                 "highlight.cpp-parameters.timeout": {
                     "type": "integer",
