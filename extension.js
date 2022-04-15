@@ -162,11 +162,15 @@ class Parser {
             // array to str
             text = textArray.join('');
             // replace all keyword type
-            text = text.replace(/(?:\bthrow\b|\bnoexcept\b|\balignas\b|(?:->\s*)?\bdecltype\b|\bstruct\b|\bstatic\b|\bunion\b|\bconst\b|\bsizeof\b|\boverride\b|\bvolatile\b|\bsigned\b)/gm, replacer);
-            function replacerByInt(str, offset, input) {
-                return ' '.repeat(str.length - 3) + 'int';
+            text = text.replace(/(?:\bthrow\b|\bnoexcept\b|\balignas\b|(?:->\s*)?\bdecltype\b|\bstruct\b|\bstatic\b|\bunion\b|\benum\b|\bconst\b|\bsizeof\b|\boverride\b|\bvolatile\b)/gm, replacer);
+
+            // replace basic type
+            function replacerByType(str, offset, input) {
+                return ' '.repeat(str.length - 3) + 'ZZZ';
             }
-            text = text.replace(/\bunsigned\b|\bsigned\b/gm, replacerByInt);
+            text = text.replace(/\bunsigned\b|\bsigned\b|\bchar\b|\bshort\b|\bint\b|\blong\b|\bfloat\b|\bdouble\b/gm, replacerByType);
+            text = text.replace(/\bZZZ\b(?:\s+\bZZZ\b)+/gm, replacerByType);
+
             // replace exclude word
             for (let i = 0 ; i < this.excludeRegexes.length ; i++) {
                 text = text.replace(this.excludeRegexes[i], replacer);
@@ -676,7 +680,9 @@ class Parser {
                 parameter = removeExtraBracket(parameter);
                 if (argsRanges[i].hasParenthesis === true) {
                     // remove extra parenthesis (foo)(bar),foo(bar) -> .foo.....,foo.....
-                    parameter = removeExtraParenthesis2(parameter);
+                    while (parameter.indexOf('(') >= 0) {
+                        parameter = removeExtraParenthesis2(parameter);
+                    }
                 }
                 // get last word if not unique
                 const search = parameter.match(

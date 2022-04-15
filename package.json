@@ -2,7 +2,7 @@
     "name": "highlight-cpp-parameters",
     "displayName": "Highlight - C/C++ Parameters",
     "description": "Highlight (decorate) parameters for C/C++ languages",
-    "version": "0.5.0",
+    "version": "0.5.1",
     "publisher": "mblet",
     "engines": {
         "vscode": "^0.0.0"
