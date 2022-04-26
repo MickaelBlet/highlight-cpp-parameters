@@ -204,6 +204,15 @@ class Parser {
                     while (/\s/gm.test(this.text[i])) {
                         i++;
                     }
+                    if (this.text[i] == '-' && this.text[i + 1] == '>') {
+                        i+=2;
+                        while (/\s/gm.test(this.text[i])) {
+                            i++;
+                        }
+                        while (/;|{|:|=/gm.test(this.text[i]) == false) {
+                            i++;
+                        }
+                    }
                     if (this.text[i] == '=' && this.text[i + 1] != '=') {
                         i++;
                         while (/\s/gm.test(this.text[i])) {
