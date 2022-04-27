@@ -23,14 +23,14 @@ unsigned int a2(unsigned int&   arg1, unsigned int&   arg2);
 unsigned int a3(unsigned int*   arg1, unsigned int*   arg2);
 unsigned int a4(unsigned int**  arg1, unsigned int**  arg2);
 unsigned int a5(unsigned int**& arg1, unsigned int**& arg2);
-unsigned int a6(std::map<std::string, std::string>   arg1, std::map<std::string, std::string>   arg2 = {{"1", "1"}}, int arg3 = 42);
-unsigned int a7(std::map<std::string, std::string>*  arg1, std::map<std::string, std::string>*  arg2, int arg3 = 42);
-unsigned int a8(std::map<std::string, std::string>&  arg1, std::map<std::string, std::string>&  arg2, int arg3 = 42);
-unsigned int a9(std::map<std::string, std::string>*& arg1, std::map<std::string, std::string>*& arg2, int arg3 = 42);
-unsigned int a10(std::map<std::pair<int, int>, std::map<std::string, std::string> >   arg1, std::map<std::pair<int, int>, std::map<std::string, std::string> >   arg2);
-unsigned int a11(std::map<std::pair<int, int>, std::map<std::string, std::string> >*  arg1, std::map<std::pair<int, int>, std::map<std::string, std::string> >*  arg2);
-unsigned int a12(std::map<std::pair<int, int>, std::map<std::string, std::string> >&  arg1, std::map<std::pair<int, int>, std::map<std::string, std::string> >&  arg2);
-unsigned int a13(std::map<std::pair<int, int>, std::map<std::string, std::string> >*& arg1, std::map<std::pair<int, int>, std::map<std::string, std::string> >*& arg2);
+unsigned int a6(std::map<int, int>   arg1, std::map<int, int>   arg2, int arg3 = 42);
+unsigned int a7(std::map<int, int>*  arg1, std::map<int, int>*  arg2, int arg3 = 42);
+unsigned int a8(std::map<int, int>&  arg1, std::map<int, int>&  arg2, int arg3 = 42);
+unsigned int a9(std::map<int, int>*& arg1, std::map<int, int>*& arg2, int arg3 = 42);
+unsigned int a10(std::map<std::pair<int, int>, std::map<int, int> >   arg);
+unsigned int a11(std::map<std::pair<int, int>, std::map<int, int> >*  arg);
+unsigned int a12(std::map<std::pair<int, int>, std::map<int, int> >&  arg);
+unsigned int a13(std::map<std::pair<int, int>, std::map<int, int> >*& arg);
 
 // parenthesis
 unsigned int p1(unsigned int   (arg));
@@ -42,14 +42,14 @@ unsigned int p6(unsigned int* (&arg));
 unsigned int p7(unsigned int*& (arg));
 
 // function parenthesis
-unsigned int fp1(unsigned int functionPtr(unsigned int arg1, unsigned int arg2(unsigned int)));
-unsigned int fp2(unsigned int functionPtr(unsigned int arg1, unsigned int (*arg2)(unsigned int)));
-unsigned int fp3(unsigned int *functionPtr(unsigned int arg1, unsigned int arg2(unsigned int)));
-unsigned int fp4(unsigned int *functionPtr(unsigned int arg1, unsigned int (*arg2)(unsigned int)));
-unsigned int fp5(unsigned int (*functionPtr)(unsigned int arg1, unsigned int arg2(unsigned int)));
-unsigned int fp6(unsigned int (*functionPtr)(unsigned int arg1, unsigned int (*arg2)(unsigned int)));
-unsigned int fp7(unsigned int ((*functionPtr))(unsigned int arg1, unsigned int arg2(unsigned int)));
-unsigned int fp8(unsigned int ((*functionPtr)(unsigned int arg1, unsigned int (*arg2)(unsigned int))));
+unsigned int fp1(unsigned int functionPtr(int arg1, int arg2(unsigned int)));
+unsigned int fp2(unsigned int functionPtr(int arg1, int (*arg2)(unsigned int)));
+unsigned int fp3(unsigned int *functionPtr(int arg1, int arg2(unsigned int)));
+unsigned int fp4(unsigned int *functionPtr(int arg1, int (*arg2)(unsigned int)));
+unsigned int fp5(unsigned int (*functionPtr)(int arg1, int arg2(unsigned int)));
+unsigned int fp6(unsigned int (*functionPtr)(int arg1, int (*arg2)(unsigned int)));
+unsigned int fp7(unsigned int ((*functionPtr))(int arg1, int arg2(unsigned int)));
+unsigned int fp8(unsigned int ((*functionPtr)(int arg1, int (*arg2)(unsigned int))));
 
 // bracket
 unsigned int b1(unsigned int array[]);
