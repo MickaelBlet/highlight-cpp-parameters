@@ -31,8 +31,8 @@ class Parser {
         this.text;
         this.excludeRegexes = [];
         this.languageIds = [];
-        this.decorationParameter;
-        this.decorationUnusedParameter;
+        this.parameterDecoration;
+        this.unusedParameterDecoration;
         this.loadConfigurations(configuration);
     }
 
@@ -43,8 +43,8 @@ class Parser {
     // load from configuration
     loadConfigurations(configuration) {
         try {
-            this.decorationParameter = vscode.window.createTextEditorDecorationType(configuration.parameterCss);
-            this.decorationUnusedParameter = vscode.window.createTextEditorDecorationType(configuration.unusedParameterCss);
+            this.parameterDecoration = vscode.window.createTextEditorDecorationType(configuration.parameterDecoration);
+            this.unusedParameterDecoration = vscode.window.createTextEditorDecorationType(configuration.unusedParameterDecoration);
             this.excludeRegexes.length = 0;
             for (let i = 0 ; i < configuration.excludeRegexes.length ; i++) {
                 try {
@@ -84,8 +84,8 @@ class Parser {
             return ;
         }
         // disable old decoration
-        editor.setDecorations(this.decorationParameter, []);
-        editor.setDecorations(this.decorationUnusedParameter, []);
+        editor.setDecorations(this.parameterDecoration, []);
+        editor.setDecorations(this.unusedParameterDecoration, []);
     }
 
     updateDecorations(editor) {
@@ -797,7 +797,7 @@ class Parser {
             // update decoration
             countDecoration += rangeParameters.length;
             editor.setDecorations(
-                this.decorationParameter,
+                this.parameterDecoration,
                 ranges
             );
             ranges.length = 0;
@@ -811,7 +811,7 @@ class Parser {
             // update decoration
             countDecoration += rangeUnusedParameters.length;
             editor.setDecorations(
-                this.decorationUnusedParameter,
+                this.unusedParameterDecoration,
                 unusedRanges
             );
             unusedRanges.length = 0;
@@ -822,7 +822,7 @@ class Parser {
             this.log(error);
         }
     }
-} // class Parser
+}; // class Parser
 
 const nameOfProperties = "highlight.cpp-parameters";
 

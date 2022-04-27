@@ -1,72 +1,73 @@
-#include "cstdio"
-#include <string>
+#include <cstdio>
 #include <map>
+#include <string>
 
 class Example {
   public:
-    Example():
-        _var(42) {
-    }
-    Example(const Example& example) : _var(example._var) {
-
-    }
+    // constructor
+    Example() : _var(42) {}
+    Example(const Example& example) : _var(example._var) {}
     ~Example() {}
-    Example &operator=(const Example& example) {
-        this->_var = example._var;
-    }
-
-    Example &operator<<(std::ostream& (*manip)(std::ostream&)) {
-        return *this;
-    }
-
-    template<class ...Args>
-    void _dbg_printf(std::string fmt, Args&& ...args) {
-    }
+    // template
+    template<typename ...Args>
+    void templateArgs(const std::string& fmt, const Args& ...args);
   private:
+    Example &operator=(const Example& example) = delete;
+
     int _var;
 };
 
-void multiArgs1(unsigned int a, unsigned int b);
-void multiArgs2(unsigned int &a, unsigned int *b);
-void multiArgs3(unsigned int&& a, unsigned int* *b);
+// argument
+unsigned int a1(unsigned int    arg1, unsigned int    arg2);
+unsigned int a2(unsigned int&   arg1, unsigned int&   arg2);
+unsigned int a3(unsigned int*   arg1, unsigned int*   arg2);
+unsigned int a4(unsigned int**  arg1, unsigned int**  arg2);
+unsigned int a5(unsigned int**& arg1, unsigned int**& arg2);
+unsigned int a6(std::map<std::string, std::string>   arg1, std::map<std::string, std::string>   arg2 = {{"1", "1"}}, int arg3 = 42);
+unsigned int a7(std::map<std::string, std::string>*  arg1, std::map<std::string, std::string>*  arg2, int arg3 = 42);
+unsigned int a8(std::map<std::string, std::string>&  arg1, std::map<std::string, std::string>&  arg2, int arg3 = 42);
+unsigned int a9(std::map<std::string, std::string>*& arg1, std::map<std::string, std::string>*& arg2, int arg3 = 42);
+unsigned int a10(std::map<std::pair<int, int>, std::map<std::string, std::string> >   arg1, std::map<std::pair<int, int>, std::map<std::string, std::string> >   arg2);
+unsigned int a11(std::map<std::pair<int, int>, std::map<std::string, std::string> >*  arg1, std::map<std::pair<int, int>, std::map<std::string, std::string> >*  arg2);
+unsigned int a12(std::map<std::pair<int, int>, std::map<std::string, std::string> >&  arg1, std::map<std::pair<int, int>, std::map<std::string, std::string> >&  arg2);
+unsigned int a13(std::map<std::pair<int, int>, std::map<std::string, std::string> >*& arg1, std::map<std::pair<int, int>, std::map<std::string, std::string> >*& arg2);
 
-void functionPtr1(unsigned int functionPtr(unsigned int test, unsigned int test2(unsigned int)), unsigned int value = 10);
-void functionPtr4(unsigned int functionPtr(int), unsigned int value = 10){
-    functionPtr((int)value);
+// parenthesis
+unsigned int p1(unsigned int   (arg));
+unsigned int p2(unsigned int&  (arg));
+unsigned int p3(unsigned int*  (arg));
+unsigned int p4(unsigned int** (arg));
+unsigned int p5(unsigned int  (&arg));
+unsigned int p6(unsigned int* (&arg));
+unsigned int p7(unsigned int*& (arg));
+
+// function parenthesis
+unsigned int fp1(unsigned int functionPtr(unsigned int arg1, unsigned int arg2(unsigned int)));
+unsigned int fp2(unsigned int functionPtr(unsigned int arg1, unsigned int (*arg2)(unsigned int)));
+unsigned int fp3(unsigned int *functionPtr(unsigned int arg1, unsigned int arg2(unsigned int)));
+unsigned int fp4(unsigned int *functionPtr(unsigned int arg1, unsigned int (*arg2)(unsigned int)));
+unsigned int fp5(unsigned int (*functionPtr)(unsigned int arg1, unsigned int arg2(unsigned int)));
+unsigned int fp6(unsigned int (*functionPtr)(unsigned int arg1, unsigned int (*arg2)(unsigned int)));
+unsigned int fp7(unsigned int ((*functionPtr))(unsigned int arg1, unsigned int arg2(unsigned int)));
+unsigned int fp8(unsigned int ((*functionPtr)(unsigned int arg1, unsigned int (*arg2)(unsigned int))));
+
+// bracket
+unsigned int b1(unsigned int array[]);
+
+// parenthesis bracket
+unsigned int pb1(unsigned int (array)[]);
+unsigned int pb2(unsigned int (*array[]));
+unsigned int pb3(unsigned int (*(array)[]));
+unsigned int pb4(unsigned int ((array))[]);
+unsigned int pb5(unsigned int (array[]));
+unsigned int pb6(unsigned int ((array)[]));
+
+// auto return format
+auto autoFunction(int arg) -> int {
+    return arg;
 }
-void functionPtr5(unsigned int *functionPtr(int), unsigned int value = 10);
-void functionPtr6(unsigned int *functionPtr(int[8]), unsigned int value = 10);
-void functionPtr6(unsigned int functionPtr(int[8]), unsigned int value = 10);
-void functionPtr7(unsigned int (functionPtr(int[8])), unsigned int value = 10);
-void functionPtr8(int (functionPtr(int[8])), unsigned int value = 10);
-void functionPtr3(unsigned int (*functionPtr)(int), unsigned int value = 10);
-void functionPtr2(unsigned int (((*functionPtr)))(int, unsigned int (*test)(unsigned int)), unsigned int value = 10);
-void functionPtr2(unsigned int (   (   (*functionPtr)  )   (  int  )  ), unsigned int value = 10);
 
-void table(const unsigned int (((&arr)))[8]);
-void table(const unsigned (((&arr)))[8]);
-
-template<typename T>
-void parenthesis(volatile T (func));
-
-template<typename T>
-void parenthesis2(T (a[]));
-template<typename T>
-void parenthesis2(T (T[]));
-
-void functionParameter3(std::map<std::string, std::string> test, int value) {
-}
-
-void functionParameter4(std::map<std::string, std::string> test, int value[]) {
-}
-
-
-unsigned int doNothing3(int unused) {}
-unsigned int doNothing2(unsigned int unused) {}
-
-unsigned int doNothing(unsigned int unused, unsigned int (*unused2)(unsigned int)) {}
-
-int main(int argc, char(* argv[])) {
+int main(int argc, char* argv[]) {
     printf("Program name:   \"%s\"\n", argv[0]);
     printf("Number of args: %d\n", argc - 1);
     if (argc > 1) {
@@ -75,5 +76,5 @@ int main(int argc, char(* argv[])) {
             printf(" - \"%s\"\n", argv[i]);
         }
     }
-    functionPtr4(doNothing3, 42);
+    return autoFunction(42);
 }

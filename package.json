@@ -2,7 +2,7 @@
     "name": "highlight-cpp-parameters",
     "displayName": "Highlight - C/C++ Parameters",
     "description": "Highlight (decorate) parameters for C/C++ languages",
-    "version": "0.5.2",
+    "version": "0.6.0",
     "publisher": "mblet",
     "engines": {
         "vscode": "^0.0.0"
@@ -28,7 +28,7 @@
                 "highlight.cpp-parameters.excludeRegexes": {
                     "type": "array",
                     "title": "Exclude regexes",
-                    "markdownDescription": "Set the exclude regexes in editor",
+                    "markdownDescription": "Set the exclude regexes in editor.",
                     "items": {
                         "type": "string"
                     },
@@ -37,7 +37,7 @@
                 "highlight.cpp-parameters.languageIds": {
                     "type": "array",
                     "title": "Language Ids",
-                    "markdownDescription": "Set the language ID for activte the highlight",
+                    "markdownDescription": "Set the language ID for activate the highlight.",
                     "items": {
                         "type": "string"
                     },
@@ -49,13 +49,16 @@
                     "default": 200
                 },
                 "highlight.cpp-parameters.parameterCss": {
+                    "markdownDeprecationMessage": "The setting `highlight.cpp-parameters.parameterCss` has been deprecated in favor of `highlight.cpp-parameters.parameterDecoration`."
+                },
+                "highlight.cpp-parameters.parameterDecoration": {
                     "type": "object",
-                    "markdownDescription": "Set css of parameters following the [css format](https://code.visualstudio.com/api/references/vscode-api#ThemableDecorationRenderOptions).",
+                    "markdownDescription": "Set decoration of parameters following at [API docs decoration](https://code.visualstudio.com/api/references/vscode-api#DecorationRenderOptions).",
                     "properties": {
                         "index": {
                             "type": "number",
                             "title": "index",
-                            "description": "Group index of regex"
+                            "description": "Group index of regex."
                         },
                         "after": {
                             "type": "object",
@@ -845,8 +848,11 @@
                     }
                 },
                 "highlight.cpp-parameters.unusedParameterCss": {
+                    "markdownDeprecationMessage": "The setting `highlight.cpp-parameters.unusedParameterCss` has been deprecated in favor of `highlight.cpp-parameters.unusedParameterDecoration`."
+                },
+                "highlight.cpp-parameters.unusedParameterDecoration": {
                     "type": "object",
-                    "markdownDescription": "Set css of unused parameters following the [css format](https://code.visualstudio.com/api/references/vscode-api#ThemableDecorationRenderOptions).",
+                    "markdownDescription": "Set decoration of unused parameters following at [API docs decoration](https://code.visualstudio.com/api/references/vscode-api#DecorationRenderOptions).",
                     "properties": {
                         "index": {
                             "type": "number",
