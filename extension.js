@@ -166,10 +166,10 @@ class Parser {
 
             // replace basic type
             function replacerByType(str, offset, input) {
-                return ' '.repeat(str.length - 3) + 'ZZZ';
+                return ' '.repeat(str.length - 3) + '___';
             }
             text = text.replace(/\bunsigned\b|\bsigned\b|\bchar\b|\bshort\b|\bint\b|\blong\b|\bfloat\b|\bdouble\b/gm, replacerByType);
-            text = text.replace(/\bZZZ\b(?:\s+\bZZZ\b)+/gm, replacerByType);
+            text = text.replace(/\b___\b(?:\s+\b___\b)+/gm, replacerByType);
 
             // replace exclude word
             for (let i = 0 ; i < this.excludeRegexes.length ; i++) {
@@ -697,7 +697,7 @@ class Parser {
                 const search = parameter.match(
                     /([a-z_A-Z0-9]+(?:::[&*\s]+)?[&*\s]*(?:[.][.][.][&*\s]*)?)\b([a-z_A-Z][a-z_A-Z0-9]*)\s*$/
                 );
-                if (search == null) {
+                if (search == null || search[2] == "___") {
                     continue ;
                 }
                 words.push(search[2]);
