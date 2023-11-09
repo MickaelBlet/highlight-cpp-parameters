@@ -7,10 +7,15 @@ class Example {
     // constructor
     Example() : _var(42) {}
     Example(const Example& example) : _var(example._var) {}
+    Example(const Example& example) : _var(example.copy()) {}
+    Example(const std::string& sameName) : sameName(sameName) {}
     ~Example() {}
     // template
     template<typename ...Args>
     void templateArgs(const std::string& fmt, const Args& ...args);
+    int copy() const;
+
+    std::string sameName;
   private:
     Example &operator=(const Example& example) = delete;
 
@@ -64,6 +69,10 @@ unsigned int pb6(unsigned int ((array)[]));
 
 // auto return format
 auto autoFunction(int arg) -> int {
+    return arg;
+}
+
+auto autoFunction(int arg) -> decltype(arg) {
     return arg;
 }
 

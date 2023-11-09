@@ -126,15 +126,10 @@ class Parser {
             while (search = regEx.exec(text)) {
                 let level = 0;
                 for (let i = search.index + search[1].length ; i < text.length ; i++) {
-                    if (text[i] == '{' || text[i] == '}') {
-                        textArray[i] = ' '; // delete in parenthesis
-                    }
                     if (text[i] == '(') {
-                        textArray[i] = ' '; // delete in parenthesis
                         level++;
                     }
                     else if (text[i] == ')') {
-                        textArray[i] = ' '; // delete in parenthesis
                         level--;
                         if (level == 0) {
                             let isPrototype = false;
@@ -151,7 +146,10 @@ class Parser {
                                 }
                             }
                             if (isPrototype == false) {
-                                textArray[search.index + search[1].length] = ':'; // simulate constructor
+                                for (let j = search.index; j < search.index + search[1].length; j++) {
+                                    textArray[j] = ' ';
+                                }
+                                textArray[search.index + search[1].length - 1] = ':'; // simulate constructor
                             }
                             break;
                         }
@@ -244,49 +242,73 @@ class Parser {
             return null;
         }
 
-        var getOpenBraceIndex = (index) => {
+        var getScopesIndexes = (index) => {
+            // search constructor or open brace
             for (let i = index ; i < this.text.length ; i++) {
                 if (this.text[i] == '(' || this.text[i] == ';') {
-                    return null;
+                    // is prototype
+                    return [null, null, null];
                 }
-                if (this.text[i] == ':' || this.text[i] == '{') {
-                    return i;
+                if (this.text[i] == ':') {
+                    // is constructor
+                    let constructorIndex = i;
+                    // search the open brace and close brace
+                    let levelBrace = 0;
+                    let levelParenthesis = 0;
+                    let saveLastOpen = -1;
+                    for (let j = i ; j < this.text.length ; j++) {
+                        if (levelParenthesis == 0 && levelBrace == 0 && this.text[j] == ';') {
+                            // end of prototype
+                            return [constructorIndex, constructorIndex, j];
+                        }
+                        else if (this.text[j] == '}') {
+                            levelBrace--;
+                            if (levelParenthesis == 0 && levelBrace == 0) {
+                                let save = j;
+                                j++;
+                                while (/\s/gm.test(this.text[j])) {
+                                    j++;
+                                }
+                                // check if follow by comma
+                                if (this.text[j] != ',' && this.text[j] != '{') {
+                                    return [constructorIndex, saveLastOpen, save];
+                                }
+                                levelBrace--;
+                                j--;
+                            }
+                        }
+                        else if (this.text[j] == ')') {
+                            levelParenthesis--;
+                        }
+                        else if (this.text[j] == '{') {
+                            levelBrace++;
+                            if (levelBrace == 1) {
+                                saveLastOpen = j;
+                            }
+                        }
+                        else if (this.text[j] == '(') {
+                            levelParenthesis++;
+                        }
+                    }
+                    return [null, null, null];
+                }
+                if (this.text[i] == '{') {
+                    let level = 0;
+                    for (let j = i + 1; j < this.text.length ; j++) {
+                        if (level == 0 && this.text[j] == '}') {
+                            return [null, i, j];
+                        }
+                        else if (level > 0 && this.text[j] == '}') {
+                            level--;
+                        }
+                        else if (this.text[j] == '{') {
+                            level++;
+                        }
+                    }
+                    return [null, null, null];
                 }
             }
-            return null;
-        }
-
-        var getCloseBraceIndex = (index, isConstructor) => {
-            let level = 0 - isConstructor;
-            for (let i = index ; i < this.text.length ; i++) {
-                if (level < 0 && this.text[i] == ';') {
-                    return i;
-                }
-                else if (level == 0 && this.text[i] == '}') {
-                    if (isConstructor) {
-                        let save = i;
-                        i++;
-                        while (/\s/gm.test(this.text[i])) {
-                            i++;
-                        }
-                        if (this.text[i] != ',' && this.text[i] != '{') {
-                            return save;
-                        }
-                        level--;
-                        i--;
-                    }
-                    else {
-                        return i;
-                    }
-                }
-                else if (level > 0 && this.text[i] == '}') {
-                    level--;
-                }
-                else if (this.text[i] == '{') {
-                    level++;
-                }
-            }
-            return null;
+            return [null, null, null];
         }
 
         var removeExtraBracket = (text) => {
@@ -751,27 +773,135 @@ class Parser {
             }
         }
 
+        // search parameter after constructor
+        var searchInConstructor = (wordsAndRanges, startConstructor, startBrace, endBrace) => {
+            let words = wordsAndRanges[0];
+            let ranges = wordsAndRanges[1];
+            if (words.length == 0) {
+                return ;
+            }
+            let countWords = [];
+            for (let i = 0; i < words.length; i++) {
+                countWords[words[i]] = 0;
+            }
+            // generate regex for all parameters names
+            let regEx = new RegExp("((?<![.]\\s*|[-][>]\\s*|[:][:]\\s*))\\b(" +
+                                    words.join("|") +
+                                    ")\\b",
+                            "gm");
+            // get scope parenthesis or brace of member class declaration
+            let lastStartBrace = -1;
+            let lastStartParenthesis = -1;
+            let parenthesisLevel = 0;
+            let braceLevel = 0;
+            for (let i = startConstructor; i < startBrace; i++) {
+                if (this.text[i] == '}') {
+                    braceLevel--;
+                    if (parenthesisLevel == 0 && braceLevel == 0) {
+                        let text = this.text.substr(lastStartBrace, i - lastStartBrace);
+                        this.log(text);
+                        let search;
+                        while (search = regEx.exec(text)) {
+                            if (search[2].length == 0) {
+                                continue ;
+                            }
+                            ranges.push({
+                                start: lastStartBrace + search.index + search[1].length,
+                                end: lastStartBrace + search.index + search[1].length + search[2].length
+                            });
+                            rangeParameters.push({
+                                start: lastStartBrace + search.index + search[1].length,
+                                end: lastStartBrace + search.index + search[1].length + search[2].length
+                            });
+                            countWords[search[2]]++;
+                        }
+                    }
+                }
+                if (this.text[i] == ')') {
+                    parenthesisLevel--;
+                    if (parenthesisLevel == 0 && braceLevel == 0) {
+                        let text = this.text.substr(lastStartParenthesis, i - lastStartParenthesis);
+                        this.log(text);
+                        let search;
+                        while (search = regEx.exec(text)) {
+                            if (search[2].length == 0) {
+                                continue ;
+                            }
+                            ranges.push({
+                                start: lastStartParenthesis + search.index + search[1].length,
+                                end: lastStartParenthesis + search.index + search[1].length + search[2].length
+                            });
+                            rangeParameters.push({
+                                start: lastStartParenthesis + search.index + search[1].length,
+                                end: lastStartParenthesis + search.index + search[1].length + search[2].length
+                            });
+                            countWords[search[2]]++;
+                        }
+                    }
+                }
+                if (this.text[i] == '{') {
+                    if (braceLevel == 0) {
+                        lastStartBrace = i;
+                    }
+                    braceLevel++;
+                }
+                if (this.text[i] == '(') {
+                    if (parenthesisLevel == 0) {
+                        lastStartParenthesis = i;
+                    }
+                    parenthesisLevel++;
+                }
+            }
+            // search in contructor scope
+            let text = this.text.substr(startBrace, endBrace - startBrace);
+            let search;
+            while (search = regEx.exec(text)) {
+                if (search[2].length == 0) {
+                    continue ;
+                }
+                ranges.push({
+                    start: startBrace + search.index + search[1].length,
+                    end: startBrace + search.index + search[1].length + search[2].length
+                });
+                rangeParameters.push({
+                    start: startBrace + search.index + search[1].length,
+                    end: startBrace + search.index + search[1].length + search[2].length
+                });
+                countWords[search[2]]++;
+            }
+            for (let i = 0; i < words.length; i++) {
+                if (countWords[words[i]] == 0) {
+                    rangeUnusedParameters.push(ranges[i]);
+                }
+                else {
+                    rangeParameters.push(ranges[i]);
+                }
+            }
+        }
+
         // search all function in text document
         var searchFunctions = () => {
             let endParenthesis = 0;
             let parenthesis;
             while (parenthesis = getParenthesisIndex(endParenthesis)) {
                 endParenthesis = parenthesis[2];
-                let startBrace = getOpenBraceIndex(endParenthesis);
+                let [startConstructor, startBrace, endBrace] = getScopesIndexes(endParenthesis);
                 if (startBrace == null) {
+                    // is prototype
                     let wordsAndRanges = searchPrototypes(parenthesis[0], parenthesis[1]);
                     for (let i = 0; i < wordsAndRanges[0].length; i++) {
                         rangeParameters.push(wordsAndRanges[1][i]);
                     }
                 }
-                else {
-                    let isConstructor = (this.text[startBrace] == ":");
-                    let endBrace = getCloseBraceIndex(++startBrace, isConstructor);
-                    if (endBrace == null) {
-                        continue ;
+                else if (endBrace != null) {
+                    let wordsAndRanges = searchPrototypes(parenthesis[0], parenthesis[1])
+                    if (startConstructor != null) {
+                        // search between ':' and startBrace
+                        searchInConstructor(wordsAndRanges, startConstructor, startBrace, endBrace);
                     }
-                    let words = searchPrototypes(parenthesis[0], parenthesis[1])
-                    searchParameters(words, startBrace, endBrace);
+                    else {
+                        searchParameters(wordsAndRanges, startBrace, endBrace);
+                    }
                     endParenthesis = endBrace;
                 }
             }
