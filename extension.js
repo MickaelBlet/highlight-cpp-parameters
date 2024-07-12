@@ -936,7 +936,12 @@ class Parser {
                 let startPosition = editor.document.positionAt(range.start);
                 let endPosition = editor.document.positionAt(range.end);
                 let vsRange = new vscode.Range(startPosition, endPosition);
-                unusedRanges.push({range: vsRange});
+                let htmlHovermessage = new vscode.MarkdownString();
+                htmlHovermessage.appendMarkdown("unused");
+                unusedRanges.push({
+                    range: vsRange,
+                    hoverMessage: htmlHovermessage
+                });
             }
             // update decoration
             countDecoration += rangeUnusedParameters.length;

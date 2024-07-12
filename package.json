@@ -2,7 +2,7 @@
     "name": "highlight-cpp-parameters",
     "displayName": "Highlight - C/C++ Parameters",
     "description": "Highlight (decorate) parameters for C/C++ languages",
-    "version": "0.7.1",
+    "version": "0.7.2",
     "publisher": "mblet",
     "engines": {
         "vscode": "^0.0.0"
@@ -48,18 +48,10 @@
                     "description": "Set timeout after applicate decorations",
                     "default": 200
                 },
-                "highlight.cpp-parameters.parameterCss": {
-                    "markdownDeprecationMessage": "The setting `highlight.cpp-parameters.parameterCss` has been deprecated in favor of `highlight.cpp-parameters.parameterDecoration`."
-                },
                 "highlight.cpp-parameters.parameterDecoration": {
                     "type": "object",
                     "markdownDescription": "Set decoration of parameters following at [API docs decoration](https://code.visualstudio.com/api/references/vscode-api#DecorationRenderOptions).",
                     "properties": {
-                        "index": {
-                            "type": "number",
-                            "title": "index",
-                            "description": "Group index of regex."
-                        },
                         "after": {
                             "type": "object",
                             "title": "after",
@@ -847,18 +839,10 @@
                         }
                     }
                 },
-                "highlight.cpp-parameters.unusedParameterCss": {
-                    "markdownDeprecationMessage": "The setting `highlight.cpp-parameters.unusedParameterCss` has been deprecated in favor of `highlight.cpp-parameters.unusedParameterDecoration`."
-                },
                 "highlight.cpp-parameters.unusedParameterDecoration": {
                     "type": "object",
                     "markdownDescription": "Set decoration of unused parameters following at [API docs decoration](https://code.visualstudio.com/api/references/vscode-api#DecorationRenderOptions).",
                     "properties": {
-                        "index": {
-                            "type": "number",
-                            "title": "index",
-                            "description": "Group index of regex"
-                        },
                         "after": {
                             "type": "object",
                             "title": "after",
@@ -1638,13 +1622,14 @@
                     },
                     "default": {
                         "fontStyle": "italic",
-                        "overviewRulerColor": "#DD8888FF",
                         "overviewRulerLane": 4,
-                        "light": {
-                            "color": "#AA4444"
-                        },
                         "dark": {
-                            "color": "#DD8888"
+                            "color": "#999999;background: url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%206%203'%20enable-background%3D'new%200%200%206%203'%20height%3D'3'%20width%3D'6'%3E%3Cg%20fill%3D'%23ffff00'%3E%3Cpolygon%20points%3D'5.5%2C0%202.5%2C3%201.1%2C3%204.1%2C0'%2F%3E%3Cpolygon%20points%3D'4%2C0%206%2C2%206%2C0.6%205.4%2C0'%2F%3E%3Cpolygon%20points%3D'0%2C2%201%2C3%202.4%2C3%200%2C0.6'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E\") repeat-x bottom left",
+                            "overviewRulerColor": "#ffff00FF"
+                        },
+                        "light": {
+                            "color": "#777777;background: url(\"data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%206%203'%20enable-background%3D'new%200%200%206%203'%20height%3D'3'%20width%3D'6'%3E%3Cg%20fill%3D'%23AAAA00'%3E%3Cpolygon%20points%3D'5.5%2C0%202.5%2C3%201.1%2C3%204.1%2C0'%2F%3E%3Cpolygon%20points%3D'4%2C0%206%2C2%206%2C0.6%205.4%2C0'%2F%3E%3Cpolygon%20points%3D'0%2C2%201%2C3%202.4%2C3%200%2C0.6'%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E\") repeat-x bottom left",
+                            "overviewRulerColor": "#AAAA00FF"
                         }
                     }
                 }
